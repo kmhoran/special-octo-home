@@ -1,0 +1,6 @@
+__pycache__/
+.env
+.vs/
+homesite/config.py
+db.sqlite3
+staticfiles
