@@ -1,0 +1,38 @@
+{% load static %}
+
+<head>
+
+    <link rel="stylesheet" href="{% static 'shared/css/base.css' %}"> {% block pageCss%}{% endblock %}
+    <title>
+        {% block title%}{% endblock %}
+    </title>
+</head>
+
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div class="app-links">
+        <ul class="link-list">
+            <li class="link-item">
+                <a class="link" href="/">Home</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="link-item">
+                <a class="link" href="{% url 'logout'%}">Logout</a>
+            </li>
+            {% else %}
+            <li class="link-item">
+                <a class="link" href="{% url 'login'%}">Login</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+
+
+    {% block content %} {% endblock %}
+    <div class="login-tool">
+        <p>{{ user }}</p>
+        <p>logged in: {{ user.is_authenticated }}</p>
+    </div>
+    
+    {% block scripts %} {% endblock %}
+</body>

@@ -1,3 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
+def index(request):
+    nav = None
+    return render(request, "welcome/index.html")

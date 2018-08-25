@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css?family=Eczar:800');
+
+.welcome-content{
+    position: relative;
+    text-align: center;
+}
+
+.title{
+    color: #222;
+    font-family: 'Eczar', serif;
+    font-size: 3em;
+    position: relative;
+    /* top: -15em; */
+}
+.jumbo-frame{
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+#jumbo{
+    max-width: 100%;
+    position: relative;
+    top: -9em;
+    position: fixed;
+    float: initial;
+    z-index: -1;
+    left: 0;
+}
+

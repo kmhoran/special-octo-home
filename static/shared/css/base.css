@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+html {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    overflow-y: hidden;
+  }
+  body {
+    min-height: 100%;
+    padding: 0;
+    margin: 0;
+
+  }
+.app-links .link-list{
+    list-style: none;
+    text-align: right;
+    padding: 0 2em;
+}
+.app-links .link-list .link-item{
+    display: inline-block;
+    margin-right: 1em;
+    
+}
+.app-links .link-list .link-item a{
+    text-decoration: none;
+    color: #333;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2em;
+}
+
+.login-tool{
+    height: 3em;
+    background-color: rgba(0, 153, 255, 0.7);
+    position: fixed;
+    padding: 1em 0.5em;
+    width: 100%;
+    z-index: 1;
+    top: 90%;
+    font-weight: 700;
+}
+.login-tool p{
+    display: inline;
+    margin-left: 1em;
+    color: #efefef;
+}

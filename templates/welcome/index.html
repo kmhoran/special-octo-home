@@ -1,0 +1,17 @@
+{% extends 'base.html' %} {% load static %} 
+
+{% block title %}Welcome Home{% endblock %} 
+
+{% block pageCss%}
+<link rel="stylesheet" href="{% static 'welcome/css/index.css' %}"> 
+{% endblock %} 
+
+{% block content %}
+<div class="welcome-content">
+    <h2 class="title">Welcome</h2>
+    <div class="jumbo-frame">
+        <img id="jumbo" src="{% static 'welcome/img/city1.jpg' %}" />
+    </div>
+    
+</div>
+{% endblock %}
