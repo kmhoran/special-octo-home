@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/2.1/howto/deployment/wsgi/
 """
 
 import os
-os.chdir('/home/pi/bin/home/homesite/homesite/')
+#os.chdir('/home/pi/bin/home/homesite/homesite/')
 
 from django.core.wsgi import get_wsgi_application
 

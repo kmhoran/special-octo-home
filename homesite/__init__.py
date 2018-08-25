@@ -1,6 +1,5 @@
 try:
-    from djangular import config
-
+    from homesite import config
     config.initialize()
 except:
     pass
