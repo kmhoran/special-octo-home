@@ -2,7 +2,13 @@
 
 <head>
 
-    <link rel="stylesheet" href="{% static 'shared/css/base.css' %}"> {% block pageCss%}{% endblock %}
+    <link rel="stylesheet" href="{% static 'shared/css/base.css' %}"> 
+    
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    
+    {% block pageCss%}{% endblock %}
     <title>
         {% block title%}{% endblock %}
     </title>
@@ -10,29 +16,15 @@
 
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div class="app-links">
-        <ul class="link-list">
-            <li class="link-item">
-                <a class="link" href="/">Home</a>
-            </li>
-            {% if user.is_authenticated %}
-            <li class="link-item">
-                <a class="link" href="{% url 'logout'%}">Logout</a>
-            </li>
-            {% else %}
-            <li class="link-item">
-                <a class="link" href="{% url 'login'%}">Login</a>
-            </li>
-            {% endif %}
-        </ul>
-    </div>
+
 
 
     {% block content %} {% endblock %}
+    {% if debug %}
     <div class="login-tool">
         <p>{{ user }}</p>
         <p>logged in: {{ user.is_authenticated }}</p>
     </div>
-    
+    {% endif %}
     {% block scripts %} {% endblock %}
 </body>

@@ -1,17 +1,20 @@
-{% extends 'base.html' %} {% load static %} 
-
+{% extends 'base.html' %} 
+{% load static %} 
 {% block title %}Welcome Home{% endblock %} 
 
 {% block pageCss%}
-<link rel="stylesheet" href="{% static 'welcome/css/index.css' %}"> 
+<link rel="stylesheet" href="{% static 'welcome/css/main.29a7bb7d.css' %}"> 
 {% endblock %} 
 
 {% block content %}
-<div class="welcome-content">
-    <h2 class="title">Welcome</h2>
-    <div class="jumbo-frame">
-        <img id="jumbo" src="{% static 'welcome/img/city1.jpg' %}" />
-    </div>
+<div id="root" 
+     data-jumbo-src="{% static 'welcome/img/city1.jpg' %}"
+     data-home-url={{home}}
+     data-login-url={{login}}
+     data-logout-url={{logout}}></div>
+{% endblock %}
+
     
-</div>
+{% block scripts %} 
+<script type="text/javascript" src="{% static 'welcome/js/main.31dc495d.js' %}"></script>
 {% endblock %}
