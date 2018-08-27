@@ -1,0 +1,49 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+body{
+    padding: 0;
+    margin: 0;
+}
+.admin-background{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+.admin-content{
+    padding: 1em;
+    position: relative;
+    float: none;
+    background-color: #efefef;
+    text-align: center;
+    width: 300px;
+    margin: auto;
+    margin-top: 3em;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+    font-family: 'Roboto', sans-serif;
+}
+
+
+#admin-image img{
+    min-height: 100%;
+  min-width: 1280px;
+	
+  /* Set up proportionate scaling */
+  width: 100%;
+  height: auto;
+	
+  /* Set up positioning */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+}
+
+/* 1920 x1280 */
+@media screen and (max-width: 1280px) { /* Specific to this particular image */
+    #admin-image img {
+      left: 50%;
+      margin-left: -640px;   /* 50% */
+    }
+  }

@@ -3,12 +3,12 @@
 {% block title %}Welcome Home{% endblock %} 
 
 {% block pageCss%}
-<link rel="stylesheet" href="{% static 'welcome/css/main.29a7bb7d.css' %}"> 
+<link rel="stylesheet" href="{% static 'welcome/css/main.css' %}"> 
 {% endblock %} 
 
 {% block content %}
 <div id="root" 
-     data-jumbo-src="{% static 'welcome/img/city1.jpg' %}"
+     data-jumbo-src="{% static 'media/city1.jpg' %}"
      data-home-url={{home}}
      data-login-url={{login}}
      data-logout-url={{logout}}></div>
@@ -16,5 +16,5 @@
 
     
 {% block scripts %} 
-<script type="text/javascript" src="{% static 'welcome/js/main.31dc495d.js' %}"></script>
+<script type="text/javascript" src="{% static 'welcome/js/main.js' %}"></script>
 {% endblock %}

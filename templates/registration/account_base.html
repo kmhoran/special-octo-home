@@ -1,0 +1,28 @@
+{% load static %}
+
+<head>
+
+    <link rel="stylesheet" href="{% static 'registration/css/account_base.css' %}">
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+
+    <title>
+        {% block title%}{% endblock %}
+    </title>
+</head>
+
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <div class="admin-background">
+        <div class="admin-content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    <div id="admin-image">
+        <img src="{% static 'media/venice1.jpeg' %}">
+    </div>
+    {% block scripts %} {% endblock %}
+</body>
