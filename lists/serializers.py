@@ -10,7 +10,7 @@ class ListItemSerializer(serializers.ModelSerializer):
                 'ordinal',
                 'is_complete',
                 'date_created',
-                'date_completed')
+                'completed_timestamp')
 
 class ListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,5 +19,4 @@ class ListSerializer(serializers.ModelSerializer):
                   'user',
                   'display_name',
                   'date_created',
-                  'listitem_set',
                   'is_complete')

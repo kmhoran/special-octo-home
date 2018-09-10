@@ -54,5 +54,15 @@ class ListItem(models.Model):
         null=True,
         default=None,)
 
+    @property
+    def completed_timestamp(self):
+        return self.date_completed
+
+    def set_date_complete(self, mark_done):
+        if not mark_done:
+            self.date_completed = None
+        elif self.date_completed is None:
+            self.date_completed = timezone.now()
+
     def __str__(self):
         return self.text

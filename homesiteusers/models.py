@@ -8,3 +8,6 @@ class UserProfile(models.Model):
     first_name = models.CharField(
         max_length=150, 
         default=None,)
+
+    def __str__(self):
+        return self.first_name
