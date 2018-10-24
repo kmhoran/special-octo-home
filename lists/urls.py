@@ -1,8 +1,8 @@
 from rest_framework.routers import DefaultRouter
-from lists.api import ListViewSet, ListItemViewSet
+from lists.api import ListsViewSetApi, ListsItemViewSetApi
 
 router = DefaultRouter()
-router.register(r'item', ListItemViewSet)
-router.register(r'', ListViewSet)
+router.register(r'user', ListsViewSetApi)
+router.register(r'', ListsItemViewSetApi)
 
 urlpatterns = router.urls

@@ -1,8 +1,13 @@
 from django.db import models
+from django.db.models import Max
 from django.utils import timezone
 from homesiteusers.models import UserProfile
 
 class List(models.Model):
+    def construct(self, user, **kwargs):
+        self.user = user
+        self.display_name = kwargs.get('display_name')
+
     user = models.ForeignKey(
         UserProfile, 
         on_delete=models.CASCADE,)
@@ -35,6 +40,17 @@ class List(models.Model):
 
 
 class ListItem(models.Model):
+    def construct(self,*args, **kwargs):
+        self.parent_list = kwargs.get('parent_list')
+        self.text = kwargs.get('text')
+        self.ordinal = self.determine_ordinal(kwargs.get('ordinal'))
+        completed = kwargs.get('is_complete', False)
+        self.is_complete = completed
+        self.set_date_complete(completed)
+        self.ordinal = self.determine_ordinal(kwargs.get('ordinal'))
+        print("[models] initial ordinal is {ord}".format(ord=self.ordinal))
+
+
     parent_list = models.ForeignKey(
         List, 
         on_delete=models.CASCADE,)
@@ -54,15 +70,24 @@ class ListItem(models.Model):
         null=True,
         default=None,)
 
-    @property
-    def completed_timestamp(self):
-        return self.date_completed
 
     def set_date_complete(self, mark_done):
         if not mark_done:
             self.date_completed = None
         elif self.date_completed is None:
             self.date_completed = timezone.now()
+    def determine_ordinal(self, passed_ord):
+        if passed_ord is not None:
+            existing_instance = ListItem.objects.filter(parent_list = self.parent_list).filter(ordinal = passed_ord)
+            if existing_instance is None:
+                return passed_ord
+            
+        max_aggregate = ListItem.objects.filter(parent_list = self.parent_list).aggregate(Max('ordinal'))
+        current_highest = max_aggregate.get('ordinal__max')
+        if current_highest is not None:
+            return current_highest + 1
+        else:
+            return 0
 
     def __str__(self):
         return self.text
