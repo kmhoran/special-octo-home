@@ -10,7 +10,6 @@ class ListReferenceSerializer(serializers.Serializer):
 class ListItemCollectionSerializer(serializers.ListSerializer):
     def validate_input(self, data, instances, size):
         instance_ids = [i.id for i in instances]
-        print('serializers-collection-validate | instance_ids: {i}'.format(i=instance_ids))
         seen_ids = []
         seen_ordinals = []
         for d in data:
@@ -21,7 +20,7 @@ class ListItemCollectionSerializer(serializers.ListSerializer):
             if ordi is None:
                 raise ArgumentException('Item {pk} requires a valid ordinal value'.format(pk=pk))
             if pk not in instance_ids:
-                raise ArgumentException('Item {pk} is not part of the current users collection'.format(pk=pk))
+                raise ArgumentException('Item {pk} is not part of the current collection'.format(pk=pk))
             if ordi >= size:
                 raise ArgumentException('ordinal value {ordi} is beyond the range of this collection: {s}'.format(ordi=ordi, s=size-1))
             if pk in seen_ids:
@@ -33,7 +32,7 @@ class ListItemCollectionSerializer(serializers.ListSerializer):
             
     def get_ordinal(self, old_ord, taken_ords, size):
         counter = size
-        try_ord = old_ord
+        try_ord = old_ord % size
         while counter > 0:
             if try_ord not in taken_ords:
                 return try_ord
@@ -44,14 +43,11 @@ class ListItemCollectionSerializer(serializers.ListSerializer):
 
     def update(self, instance_set, data):
         instances = sorted(instance_set, key = lambda i : i.ordinal)
-
         collection_size = count=len(instances)
-        
         self.validate_input(data, instances, collection_size)
         data_ids = [d.get('id') for d in data]
         data_intances = {i.id: i for i in instances if i.id in data_ids}
         taken_ords = []
-        
 
         # explicitly set user-defined ordinals
         for d in data:
@@ -69,7 +65,7 @@ class ListItemCollectionSerializer(serializers.ListSerializer):
             original_ord = i.ordinal
             i.ordinal = self.get_ordinal(i.ordinal, taken_ords, collection_size)
             if i.ordinal != original_ord:
-                inst.save()
+                i.save()
             taken_ords.append(i.ordinal)
             
         return instances
