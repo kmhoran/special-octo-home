@@ -2,7 +2,8 @@ from rest_framework import serializers
 from lists.models import List, ListItem
 from homesiteusers.serializers import UserProfileSerializer
 from library.exceptions.restExceptions import ArgumentException, ApplicationException
- 
+from library.errorLog import get_logger, log_app_errors
+logger = get_logger(__name__)
 
 class ListReferenceSerializer(serializers.Serializer):
         id = serializers.IntegerField(read_only=True)
@@ -40,8 +41,12 @@ class ListItemCollectionSerializer(serializers.ListSerializer):
             counter = counter - 1
         raise ApplicationException("Out of collection range")
 
-
+    # log_app_errors will log any exceptions caught along with the stack trace
+    @log_app_errors
     def update(self, instance_set, data):
+        """
+        update ordinals in a collection of ListItems
+        """
         instances = sorted(instance_set, key = lambda i : i.ordinal)
         collection_size = count=len(instances)
         self.validate_input(data, instances, collection_size)
@@ -112,8 +117,11 @@ class ListObjectSerializer(serializers.Serializer):
         
         def create(self, validated_data):
             if validated_data.get('user') is not None:
-                raise ArgumentException('user argument should not be set')
+                ex = ArgumentException('user argument should not be set')
+                logger.exception(ex)
+                raise ex
             user = 1
+            logger.warning('user hardcoded to 1')
             newList = List()
             newList.construct(user=user, **validated_data)
             newList.save()

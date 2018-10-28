@@ -7,6 +7,7 @@ class ArgumentException(APIException):
     default_detail = 'Invalid argument passed'
     default_code = 'BAD_REQUEST'
 
+
 class NotAllowedException(APIException):
     status_code = 405
     default_detail = 'Methond not allowed'

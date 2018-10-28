@@ -1,5 +1,7 @@
 from django.urls import reverse
 from django.conf import settings
+from library.errorLog import get_logger
+logger = get_logger(__name__)
 
 def GetNavigationLinks(request):
     home_url = reverse("main-index")
@@ -13,10 +15,12 @@ def GetNavigationLinks(request):
         login_url = reverse('login')
 
     debug = settings.DEBUG
-
-    return {
+    nav_dict = {
         'home': home_url,
         'login': login_url,
         'logout': logout_url,
         'debug': debug
     }
+    logger.info('renduring site-navigation dict : {}'.format(str(nav_dict).replace(',','..')))
+    
+    return nav_dict 

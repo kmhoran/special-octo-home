@@ -2,9 +2,12 @@ from django.db import models
 from django.db.models import Max
 from django.utils import timezone
 from homesiteusers.models import UserProfile
+from library.errorLog import get_logger
+logger = get_logger(__name__)
 
 class List(models.Model):
     def construct(self, user, **kwargs):
+        logger.info('constructing List "{}"'.format(kwargs.get('display_name')))
         self.user = user
         self.display_name = kwargs.get('display_name')
 
@@ -41,6 +44,7 @@ class List(models.Model):
 
 class ListItem(models.Model):
     def construct(self,*args, **kwargs):
+        logger.info('constructing ListItem {} for List {}'.format(kwargs.get('text'), kwargs.get('parent_list')))
         self.parent_list = kwargs.get('parent_list')
         self.text = kwargs.get('text')
         self.ordinal = self.determine_ordinal(kwargs.get('ordinal'))
@@ -73,20 +77,25 @@ class ListItem(models.Model):
 
     def set_date_complete(self, mark_done):
         if not mark_done:
+            logger.info('set List Item {} complete date to None'.format(self.id))
             self.date_completed = None
         elif self.date_completed is None:
+            logger.info('set List Item {} complete date to {}'.format(timezone.now()))
             self.date_completed = timezone.now()
     def determine_ordinal(self, passed_ord):
         if passed_ord is not None:
             existing_instance = ListItem.objects.filter(parent_list = self.parent_list).filter(ordinal = passed_ord)
             if existing_instance is None:
+                logger.info('returning original item instance ordinal {}'.format(passed_ord))
                 return passed_ord
             
         max_aggregate = ListItem.objects.filter(parent_list = self.parent_list).aggregate(Max('ordinal'))
         current_highest = max_aggregate.get('ordinal__max')
         if current_highest is not None:
+            logger.info('returning calculated item instance ordinal {}'.format(current_highest + 1))
             return current_highest + 1
         else:
+            logger.warning('returning fall-through value ordinal 0. Something is wrong.')
             return 0
 
     def __str__(self):

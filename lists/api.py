@@ -7,12 +7,15 @@ from django.contrib.auth.models import User
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework import viewsets
-from library.exceptions.restExceptions import ApplicationException, ArgumentException, NotAllowedException
 from lists.serializers import ListObjectSerializer, ListItemSerializer
 from lists.models import List, ListItem
+from library.exceptions.restExceptions import ApplicationException, ArgumentException, NotAllowedException
+from library.errorLog import get_logger
+logger = get_logger(__name__)
 
 
 DEFAULT_USER_ID = 1
+logger.warning('List Api defaulting user to 1')
 
 class ListsViewSetApi(mixins.CreateModelMixin,
                       mixins.ListModelMixin,
@@ -21,8 +24,10 @@ class ListsViewSetApi(mixins.CreateModelMixin,
     serializer_class = ListObjectSerializer
     base_name = 'list'
 
+
     def perform_create(self, serializer):
         serializer.save()
+
 
     def filter_queryset(self, full_set):
         return full_set.filter(user = DEFAULT_USER_ID)
@@ -50,7 +55,9 @@ class ListsItemViewSetApi(viewsets.GenericViewSet):
         Create and List items for a designated list
         """
         if parent_list is None:
-            raise ArgumentException("No parent list provided.")
+            ex = ArgumentException("No parent list provided.")
+            logger.exception(ex)
+            raise ex
         
         # create
         if request.method == 'POST':
@@ -66,18 +73,28 @@ class ListsItemViewSetApi(viewsets.GenericViewSet):
         else:
 
             # we should never get to this point
-            raise NotAllowedException("Method {method} not allowed.".format(method=request.method))
+            ex = NotAllowedException("Method {method} not allowed.".format(method=request.method))
+            logger.exception(ex)
+            raise ex
+
 
     def create_instance(self, request, parent, *args, **kwargs):
-        print('creating!')
+        logger.info('creating list item for list {}'.format(parent))
         req_parent = request.data.get('parent_list')
         if int(parent) != int(req_parent):
-            print('api | collections | parent: {parent}, req: {req}'.format(parent=parent, req=req_parent))
-            raise ArgumentException("Requested parents do not match.")
+            ex = ArgumentException("Requested parents do not match. {} != {}".format(parent, req_parent))
+            logger.exception(ex)
+            raise ex
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except Exception as ex:
+            logger.exception(ex)
+            raise ex 
+        
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
 
     def get_collection(self, request, parent, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset(), parent)
@@ -89,6 +106,7 @@ class ListsItemViewSetApi(viewsets.GenericViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(self.sort_items(serializer.data))
+
 
     def update_collection(self, request, parent, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset(), parent)
@@ -112,13 +130,17 @@ class ListsItemViewSetApi(viewsets.GenericViewSet):
         Updates single item for a designated list
         """
         if parent_list is None:
-            raise ArgumentException("No parent list provided.")
+            ex = ArgumentException("No parent list provided.")
+            logger.exception(ex)
+            raise ex
         
         # validate entity exists
         try:
             exististing_instance = self.get_queryset().get(id = item_id, parent_list=parent_list)
         except:
-            raise ArgumentException("Item {pk} does not belong to list {parent}".format(pk=item_id, parent=parent_list))
+            ex = ArgumentException("Item {pk} does not belong to list {parent}".format(pk=item_id, parent=parent_list))
+            logger.exception(ex)
+            raise ex
         
         if request.method == 'PUT':
 
@@ -135,8 +157,6 @@ class ListsItemViewSetApi(viewsets.GenericViewSet):
         else:
 
             # we should never get to this point
-            raise NotAllowedException("Method {method} not allowed.".format(method=request.method))
-
-
-        
-
+            ex = NotAllowedException("Method {method} not allowed.".format(method=request.method))
+            logger.exception(ex)
+            raise ex
