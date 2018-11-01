@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from lists.models import List, ListItem
+from homesiteusers.models import UserProfile
 from homesiteusers.serializers import UserProfileSerializer
 from library.exceptions.restExceptions import ArgumentException, ApplicationException
+
 from library.errorLog import get_logger, log_app_errors
 logger = get_logger(__name__)
 
@@ -110,23 +112,26 @@ class ListItemSerializer(serializers.Serializer):
 class ListObjectSerializer(serializers.Serializer):
         
         id = serializers.IntegerField(read_only=True)
-        user = UserProfileSerializer(read_only=True)
+        profile = UserProfileSerializer(read_only=True)
         display_name = serializers.CharField(max_length=250)
         date_created = serializers.DateTimeField(read_only=True)
         is_complete = serializers.BooleanField(read_only=True)
-        
+
+        @log_app_errors
         def create(self, validated_data):
-            if validated_data.get('user') is not None:
+            if validated_data.get('profile') is not None:
                 ex = ArgumentException('user argument should not be set')
                 logger.exception(ex)
                 raise ex
-            user = 1
-            logger.warning('user hardcoded to 1')
+            
+            profile = UserProfile.objects.get(id=1)
+            logger.warning('profile hardcoded to 1')
             newList = List()
-            newList.construct(user=user, **validated_data)
+            newList.construct(profile=profile, **validated_data)
             newList.save()
             return newList
         
+        @log_app_errors
         def update(self, instance, validated_data):
             instance.display_name = validated_data.get('display_name', instance.display_name)
             instance.save()

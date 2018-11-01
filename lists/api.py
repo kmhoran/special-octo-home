@@ -9,18 +9,20 @@ from rest_framework.decorators import action
 from rest_framework import viewsets
 from lists.serializers import ListObjectSerializer, ListItemSerializer
 from lists.models import List, ListItem
+from homesiteusers.models import UserProfile
 from library.exceptions.restExceptions import ApplicationException, ArgumentException, NotAllowedException
 from library.errorLog import get_logger
 logger = get_logger(__name__)
 
 
-DEFAULT_USER_ID = 1
-logger.warning('List Api defaulting user to 1')
+DEFAULT_PROFILE_ID = 1
+logger.warning('List Api defaulting user profile to 1')
 
 class ListsViewSetApi(mixins.CreateModelMixin,
                       mixins.ListModelMixin,
+                      mixins.UpdateModelMixin,
                       viewsets.GenericViewSet):
-    queryset = List.objects.filter(user = DEFAULT_USER_ID)
+    queryset = List.objects.filter(profile__id = DEFAULT_PROFILE_ID)
     serializer_class = ListObjectSerializer
     base_name = 'list'
 
@@ -28,9 +30,6 @@ class ListsViewSetApi(mixins.CreateModelMixin,
     def perform_create(self, serializer):
         serializer.save()
 
-
-    def filter_queryset(self, full_set):
-        return full_set.filter(user = DEFAULT_USER_ID)
 
 
 class ListsItemViewSetApi(viewsets.GenericViewSet):

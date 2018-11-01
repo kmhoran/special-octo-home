@@ -21,6 +21,7 @@ def GetNavigationLinks(request):
         'logout': logout_url,
         'debug': debug
     }
-    logger.info('renduring site-navigation dict : {}'.format(str(nav_dict).replace(',','..')))
+    logger_string = 'renduring site-navigation dict : {}'.format(str(nav_dict).replace(',','..')) 
+    logger.info(logger_string)
     
     return nav_dict 

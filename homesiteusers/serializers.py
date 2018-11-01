@@ -4,5 +4,7 @@ from homesiteusers.models import UserProfile
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields=('user',
+        fields=('id',
+                'user',
                 'first_name')
+        read_only_fields = ('id','user',)

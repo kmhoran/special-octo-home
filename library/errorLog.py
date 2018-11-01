@@ -12,14 +12,13 @@ CONSOLE_LOG_LEVEL = logging.ERROR
 csv_format = '%(asctime)s,%(thread)d,%(name)s,%(levelno)s,%(levelname)s,%(module)s,%(lineno)d,%(funcName)s,%(message)s'
 
 # create CSV log if none exists
-my_file = Path(ERROR_LOG_FILE)
-if my_file.is_file():
-    f= open(ERROR_LOG_FILE,"w+")
-    contents = f.read()
-    if len(contents) == 0:
-        # create CSV headers based on csv_format output
-        f.write('TIMESTAMP,MILISEC,THREAD ID,NAME,LEVEL NO.,LEVEL NAME,MODULE,LINE NO.,FUNCTION,MESSAGE\n')
-    f.close()
+f= open(ERROR_LOG_FILE,"a+")
+f.seek(0)
+contents = f.read()
+if len(contents) == 0:
+    # create CSV headers based on csv_format output
+    f.write('TIMESTAMP,MILISEC,THREAD ID,NAME,LEVEL NO.,LEVEL NAME,MODULE,LINE NO.,FUNCTION,MESSAGE\n')
+f.close()
 
 
 def get_logger(name):
@@ -49,14 +48,19 @@ def get_logger(name):
 
     return logger
 
+def log_error(logger: logging.Logger, ex):
+    logger.exception(ex)
+    return ex
+
 
 def log_app_errors(f):
     """
+    logs thrown errors along with stack trace
     use strategically, double error-log entries are common
     """
     def logging_decorator(*args, **kwargs):
         try:
-            f(*args, **kwargs)
+            return f(*args, **kwargs)
         except Exception as e:
             message = 'no message'
             if hasattr(e, 'message'):

@@ -6,12 +6,12 @@ from library.errorLog import get_logger
 logger = get_logger(__name__)
 
 class List(models.Model):
-    def construct(self, user, **kwargs):
+    def construct(self, profile, **kwargs):
         logger.info('constructing List "{}"'.format(kwargs.get('display_name')))
-        self.user = user
+        self.profile = profile
         self.display_name = kwargs.get('display_name')
 
-    user = models.ForeignKey(
+    profile = models.ForeignKey(
         UserProfile, 
         on_delete=models.CASCADE,)
     display_name = models.CharField(
@@ -77,10 +77,10 @@ class ListItem(models.Model):
 
     def set_date_complete(self, mark_done):
         if not mark_done:
-            logger.info('set List Item {} complete date to None'.format(self.id))
+            logger.info('set List Item complete date to None')
             self.date_completed = None
         elif self.date_completed is None:
-            logger.info('set List Item {} complete date to {}'.format(timezone.now()))
+            logger.info('set List Item complete date to {}'.format(timezone.now()))
             self.date_completed = timezone.now()
     def determine_ordinal(self, passed_ord):
         if passed_ord is not None:
